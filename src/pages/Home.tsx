@@ -1,57 +1,74 @@
-import MessageListItem from '../components/MessageListItem';
-import { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
+import React from "react";
 import {
+  IonButton,
   IonContent,
   IonHeader,
-  IonList,
   IonPage,
-  IonRefresher,
-  IonRefresherContent,
   IonTitle,
-  IonToolbar,
-  useIonViewWillEnter
-} from '@ionic/react';
-import './Home.css';
+  IonToolbar
+} from "@ionic/react";
+import { useForm } from "react-hook-form";
+import Select from "../components/Select";
+
+let defaultValues = {
+  subjectId: ""
+};
+
+const options = [
+  {
+    label: "Option1",
+    value: "1"
+  },
+  {
+    label: "Option2",
+    value: "2"
+  }
+];
 
 const Home: React.FC = () => {
-
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, isValid, errors }
+  } = useForm({
+    defaultValues: defaultValues,
+    mode: "onChange"
   });
 
-  const refresh = (e: CustomEvent) => {
-    setTimeout(() => {
-      e.detail.complete();
-    }, 3000);
+  const handlerSendButton = async (select: any) => {
+    alert(select);
+  };
+
+  const rulesSubject = {
+    required: "this field is required"
   };
 
   return (
     <IonPage id="home-page">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <IonContent fullscreen>
-        <IonRefresher slot="fixed" onIonRefresh={refresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
-
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">
-              Inbox
-            </IonTitle>
+            <IonTitle size="large">Example Select React Hook Form</IonTitle>
           </IonToolbar>
         </IonHeader>
-
-        <IonList>
-          {messages.map(m => <MessageListItem key={m.id} message={m} />)}
-        </IonList>
+        <h6 className="text-2xl font-bold text-center">Contact us</h6>
+        <Select
+          control={control}
+          errors={errors}
+          defaultValue={defaultValues.subjectId}
+          options={options}
+          name="subjectId"
+          label={"Subject"}
+          rules={rulesSubject}
+        />
+        <IonButton
+          expand="block"
+          className="mt-16"
+          onClick={handleSubmit(handlerSendButton)}
+          disabled={!isValid || isSubmitting}
+        >
+          Save
+        </IonButton>
       </IonContent>
     </IonPage>
   );
