@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   });
 
   const handlerSendButton = async (select: any) => {
-    alert(select);
+    alert(JSON.stringify(select));
   };
 
   const rulesSubject = {
